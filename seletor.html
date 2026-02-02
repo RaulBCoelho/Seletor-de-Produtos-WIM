@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Seletor WIM</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+.pergunta { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; }
+button { margin-right: 10px; margin-top: 10px; }
+.resumo { border: 2px solid #000; padding: 15px; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h1>Seletor de Produto – WIM</h1>
+<div id="app"></div>
+
+<script>
+let dados, respostas = {}, painelSelecionado = null;
+
+fetch("rules_wim.json")
+  .then(r => r.json())
+  .then(d => { dados = d; render(); });
+
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  bool("area_classificada", "Sistema para área classificada?");
+
+  if (respostas.area_classificada === true) {
+    select("local", "Local de instalação", ["ÁREA CLASSIFICADA", "ÁREA NÃO CLASSIFICADA"]);
+  }
+
+  select("material", "Material do painel", ["AÇO CARBONO", "AÇO INOX"]);
+  select("porta", "Tipo de porta", ["SIMPLES", "DUPLA"]);
+  select("ios", "Quantidade de I/Os", [2,4,6,8]);
+  bool("saida_analogica", "Saída analógica?");
+  bool("serial", "Comunicação serial?");
+
+  if (respostas.ios && respostas.ios <= 4) {
+    select("fieldbus", "Fieldbus", ["Nenhum","Profibus","Profinet","EtherNet/IP","Modbus TCP"]);
+  }
+
+  select("celulas", "Quantidade de células", [1,2,3,4,5,6,7,8,9,10,11,12,13,16]);
+
+  if (tudoRespondidoPainel()) {
+    button("Gerar Painel", gerarPainel);
+  }
+
+  if (painelSelecionado) {
+    fase2();
+  }
+
+  button("Limpar tudo", () => { respostas = {}; painelSelecionado = null; render(); });
+}
+
+function fase2() {
+  number("dist_painel", "Metros de cabo entre equipamento e painel");
+
+  if (respostas.celulas > 4) {
+    number("dist_caixa", "Distância entre caixa de junção e passagem");
+  }
+
+  select("tipo_caixa", "Modelo da caixa", ["Inox","Ambiente Agressivo"]);
+
+  if (!painelSelecionado.area_classificada) {
+    select("tacometro", "Tacômetro", ["Gerador de Pulsos","Sensor Indutivo"]);
+  }
+
+  if (tudoRespondidoFinal()) {
+    button("Finalizar", resumoFinal);
+  }
+}
+
+function gerarPainel() {
+  painelSelecionado = dados.paineis.find(p =>
+    p.area_classificada === respostas.area_classificada &&
+    p.material === respostas.material &&
+    p.porta === respostas.porta &&
+    p.saida_analogica === respostas.saida_analogica
+  );
+  render();
+}
+
+function resumoFinal() {
+  const app = document.getElementById("app");
+  const area = painelSelecionado.area_classificada ? "classificada" : "nao_classificada";
+  const cabos = dados.cabos[area];
+
+  const dPainel = respostas.dist_painel;
+  const dCaixa = respostas.dist_caixa || 0;
+  const c = respostas.celulas;
+
+  let qtdJun = 0, qtdPas = 0;
+
+  if (c <= 4) {
+    qtdJun = 1;
+  } else if (c <= 8) {
+    qtdJun = 2; qtdPas = 1;
+  } else if (c <= 12) {
+    qtdJun = 3; qtdPas = 1;
+  } else {
+    qtdJun = 4; qtdPas = 1;
+  }
+
+  const metrosTacometro = dPainel;
+  const metrosBalanca = c <= 4
+    ? dPainel
+    : dPainel + (qtdJun * dCaixa);
+
+  app.innerHTML = `
+    <div class="resumo">
+      <h3>Resumo Final</h3>
+
+      <b>Painel:</b> ${painelSelecionado.titulo}<br>
+      <b>Código:</b> ${painelSelecionado.codigo}<br><br>
+
+      <b>Cabo Tacômetro:</b> ${cabos.tacometro}<br>
+      <b>Comprimento:</b> ${metrosTacometro} m<br><br>
+
+      <b>Cabo Balança:</b> ${cabos.balanca}<br>
+      <b>Comprimento:</b> ${metrosBalanca} m<br><br>
+
+      <b>Caixas:</b><br>
+      ${qtdJun}x Caixa de junção<br>
+      ${qtdPas}x Caixa de passagem
+    </div>
+  `;
+}
+
+/* ===== COMPONENTES ===== */
+function select(id,t,ops){const d=box(t),s=document.createElement("select");
+s.innerHTML=`<option value="">Selecione</option>`;ops.forEach(o=>s.add(new Option(o,o)));
+s.value=respostas[id]||"";s.onchange=()=>{respostas[id]=s.value;render();};d.appendChild(s);}
+function bool(id,t){const d=box(t);["Sim","Não"].forEach(v=>{const i=document.createElement("input");
+i.type="radio";i.name=id;i.checked=respostas[id]===(v==="Sim");
+i.onchange=()=>{respostas[id]=v==="Sim";render();};d.append(i,v,document.createElement("br"));});}
+function number(id,t){const d=box(t),i=document.createElement("input");
+i.type="number";i.value=respostas[id]||"";i.onchange=()=>{respostas[id]=Number(i.value);render();};d.appendChild(i);}
+function box(t){const a=document.getElementById("app"),d=document.createElement("div");
+d.className="pergunta";d.innerHTML=`<b>${t}</b><br>`;a.appendChild(d);return d;}
+function button(t,f){const b=document.createElement("button");b.textContent=t;b.onclick=f;
+document.getElementById("app").appendChild(b);}
+
+/* ===== VALIDAÇÕES ===== */
+function tudoRespondidoPainel() {
+  return ["area_classificada","material","porta","ios","saida_analogica","celulas"]
+    .every(k => respostas[k] !== undefined && respostas[k] !== "");
+}
+function tudoRespondidoFinal() {
+  return respostas.dist_painel && respostas.tipo_caixa;
+}
+</script>
+
+</body>
+</html>

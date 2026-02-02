@@ -1,0 +1,69 @@
+{
+  "paineis": [
+    {
+      "titulo": "PAINEL TC400 BELT E (AC) EX",
+      "codigo": "7017713",
+      "area_classificada": true,
+      "material": "AÇO CARBONO",
+      "porta": "SIMPLES",
+      "saida_analogica": false
+    },
+    {
+      "titulo": "PAINEL TC400 BELT E (AC)",
+      "codigo": "7017357",
+      "area_classificada": false,
+      "material": "AÇO CARBONO",
+      "porta": "SIMPLES",
+      "saida_analogica": false
+    },
+    {
+      "titulo": "PAINEL TC400 BELT E - PORTA DUPLA (AI)",
+      "codigo": "7017388",
+      "area_classificada": false,
+      "material": "AÇO INOX",
+      "porta": "DUPLA",
+      "saida_analogica": false
+    },
+    {
+      "titulo": "PAINEL TC400 BELT E (AC) SA",
+      "codigo": "7017526",
+      "area_classificada": false,
+      "material": "AÇO CARBONO",
+      "porta": "SIMPLES",
+      "saida_analogica": true
+    },
+    {
+      "titulo": "PAINEL TC400 BELT E - PORTA DUPLA (AC) SA",
+      "codigo": "7017711",
+      "area_classificada": false,
+      "material": "AÇO CARBONO",
+      "porta": "DUPLA",
+      "saida_analogica": true
+    }
+  ],
+  "cabos": {
+    "nao_classificada": {
+      "balanca": "6207717",
+      "tacometro": "3405110"
+    },
+    "classificada": {
+      "balanca": "6207719",
+      "tacometro": "5023332"
+    }
+  },
+  "tacometros": {
+    "gerador": "5600013",
+    "indutivo": "5100264",
+    "ex": "5015367"
+  },
+  "caixas": {
+    "inox": {
+      "juncao": "6053134",
+      "passagem": "6076468"
+    },
+    "ambiente_agressivo": {
+      "juncao": "6302178",
+      "passagem": "6219739"
+    }
+  }
+}
