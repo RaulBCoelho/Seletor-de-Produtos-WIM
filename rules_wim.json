@@ -1,69 +1,24 @@
 {
-  "paineis": [
-    {
-      "titulo": "PAINEL TC400 BELT E (AC) EX",
-      "codigo": "7017713",
-      "area_classificada": true,
-      "material": "AÇO CARBONO",
-      "porta": "SIMPLES",
-      "saida_analogica": false
-    },
-    {
-      "titulo": "PAINEL TC400 BELT E (AC)",
-      "codigo": "7017357",
-      "area_classificada": false,
-      "material": "AÇO CARBONO",
-      "porta": "SIMPLES",
-      "saida_analogica": false
-    },
-    {
-      "titulo": "PAINEL TC400 BELT E - PORTA DUPLA (AI)",
-      "codigo": "7017388",
-      "area_classificada": false,
-      "material": "AÇO INOX",
-      "porta": "DUPLA",
-      "saida_analogica": false
-    },
-    {
-      "titulo": "PAINEL TC400 BELT E (AC) SA",
-      "codigo": "7017526",
-      "area_classificada": false,
-      "material": "AÇO CARBONO",
-      "porta": "SIMPLES",
-      "saida_analogica": true
-    },
-    {
-      "titulo": "PAINEL TC400 BELT E - PORTA DUPLA (AC) SA",
-      "codigo": "7017711",
-      "area_classificada": false,
-      "material": "AÇO CARBONO",
-      "porta": "DUPLA",
-      "saida_analogica": true
-    }
+  "paineis":[
+    {"nome":"PAINEL TC400 BELT E (AC) EX","codigo":"7017713"},
+    {"nome":"PAINEL TC400 BELT E (AC)","codigo":"7017357"},
+    {"nome":"PAINEL TC400 BELT E - PORTA DUPLA (AI)","codigo":"7017388"},
+    {"nome":"PAINEL TC400 BELT E (AC) SA","codigo":"7017526"},
+    {"nome":"PAINEL TC400 BELT E - PORTA DUPLA (AC) SA","codigo":"7017711"}
   ],
-  "cabos": {
-    "nao_classificada": {
-      "balanca": "6207717",
-      "tacometro": "3405110"
-    },
-    "classificada": {
-      "balanca": "6207719",
-      "tacometro": "5023332"
-    }
-  },
-  "tacometros": {
-    "gerador": "5600013",
-    "indutivo": "5100264",
-    "ex": "5015367"
-  },
-  "caixas": {
-    "inox": {
-      "juncao": "6053134",
-      "passagem": "6076468"
-    },
-    "ambiente_agressivo": {
-      "juncao": "6302178",
-      "passagem": "6219739"
-    }
-  }
+  "fluxo":[
+    {"id":"painel","pergunta":"Selecione o painel","tipo":"opcao","opcoes":["7017713","7017357","7017388","7017526","7017711"]},
+    {"id":"area_classificada","pergunta":"Sistema para área classificada?","tipo":"boolean"},
+    {"id":"porta","pergunta":"Tipo de porta","tipo":"opcao","opcoes":["Simples","Dupla"],"condicao":{"area_classificada":false}},
+    {"id":"material","pergunta":"Material do painel","tipo":"opcao","opcoes":["Aço Carbono","Aço Inox"]},
+    {"id":"quantidade_io","pergunta":"Quantidade de entradas e saídas","tipo":"number"},
+    {"id":"saida_analogica","pergunta":"Saída analógica?","tipo":"boolean"},
+    {"id":"serial","pergunta":"Serial?","tipo":"boolean"},
+    {"id":"fieldbus","pergunta":"Fieldbus","tipo":"opcao_multipla","opcoes":["Nenhum","Profibus","Profinet","Modbus TCP"]},
+    {"id":"quantidade_celulas","pergunta":"Quantas células de carga?","tipo":"number"},
+    {"id":"metros_cabo","pergunta":"Quantos metros de cabo entre equipamento e painel?","tipo":"number"},
+    {"id":"metros_cx","pergunta":"Qual a distância entre a caixa de junção e passagem?","tipo":"number","condicao":{"quantidade_celulas":5}},
+    {"id":"tacometro","pergunta":"Tacômetro: Gerador de pulsos ou sensor indutivo?","tipo":"opcao","opcoes":["Gerador de pulsos","Sensor indutivo"],"condicao":{"area_classificada":false}},
+    {"id":"modelo_caixa","pergunta":"Modelo da caixa de junção?","tipo":"opcao","opcoes":["Inox","Ambiente agressivo"]}
+  ]
 }
